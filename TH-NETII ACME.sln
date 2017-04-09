@@ -7,11 +7,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		Common.props = Common.props
 		LICENSE = LICENSE
+		Paths.props = Paths.props
+		Version.props = Version.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{5A3AAF6E-0FA3-4317-8AAE-0D38BA05F97E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "acme", "acme", "{53265252-9CA1-4793-BB1C-5A823CAA5785}"
+	ProjectSection(SolutionItems) = preProject
+		doc\acme\README.md = doc\acme\README.md
 	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5A3AAF6E-0FA3-4317-8AAE-0D38BA05F97E} = {24DFF068-7CAE-41CF-B2B9-1C42E2AEA400}
+		{53265252-9CA1-4793-BB1C-5A823CAA5785} = {5A3AAF6E-0FA3-4317-8AAE-0D38BA05F97E}
 	EndGlobalSection
 EndGlobal
