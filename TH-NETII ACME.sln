@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Version.props = Version.props
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B8B75351-572E-46FF-B675-F25E12193D59}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Acme.Client", "src\THNETII.Acme.Client\THNETII.Acme.Client.csproj", "{519EE66F-75F5-437C-A7BF-5095C3A21782}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{5A3AAF6E-0FA3-4317-8AAE-0D38BA05F97E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "acme", "acme", "{53265252-9CA1-4793-BB1C-5A823CAA5785}"
@@ -21,10 +25,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "acme", "acme", "{53265252-9
 	EndProjectSection
 EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{519EE66F-75F5-437C-A7BF-5095C3A21782}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{519EE66F-75F5-437C-A7BF-5095C3A21782}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{519EE66F-75F5-437C-A7BF-5095C3A21782}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{519EE66F-75F5-437C-A7BF-5095C3A21782}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{519EE66F-75F5-437C-A7BF-5095C3A21782} = {B8B75351-572E-46FF-B675-F25E12193D59}
 		{5A3AAF6E-0FA3-4317-8AAE-0D38BA05F97E} = {24DFF068-7CAE-41CF-B2B9-1C42E2AEA400}
 		{53265252-9CA1-4793-BB1C-5A823CAA5785} = {5A3AAF6E-0FA3-4317-8AAE-0D38BA05F97E}
 	EndGlobalSection
