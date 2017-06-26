@@ -4,7 +4,7 @@
     <VersionMajor Condition="'$(VersionMajor)' == ''">0</VersionMajor>
     <VersionMinor Condition="'$(VersionMinor)' == ''">0</VersionMinor>
     <VersionRevision Condition="'$(VersionRevision)' == ''">1</VersionRevision>
-    <AcmeIetf>acmedraft05</AcmeIetf>
+    <AcmeIetf>acmedraft02</AcmeIetf>
   </PropertyGroup>
   <PropertyGroup>
     <VersionPrefix Condition="'$(VersionPrefix)'==''">$(VersionMajor).$(VersionMinor).$(VersionRevision)</VersionPrefix>
