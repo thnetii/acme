@@ -1,45 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using THNETII.Common;
+
+using static THNETII.Acme.Client.UriSafeConverter;
 
 namespace THNETII.Acme.Client
 {
+    [DataContract]
     public class AcmeDirectory
     {
-        private string directoryUriString;
-        private Tuple<string, Uri> directoryUriCache;
+        private DuplexConversionTuple<string, Uri> keyChange;
+        private DuplexConversionTuple<string, Uri> newAuthz;
+        private DuplexConversionTuple<string, Uri> newCert;
+        private DuplexConversionTuple<string, Uri> newReg;
+        private DuplexConversionTuple<string, Uri> revokeCert;
 
-        public string DirectoryUriString
+        [DataMember(Name = "key-change")]
+        public string KeyChangeUriString
         {
-            get => directoryUriString;
-            set => directoryUriString = value;
+            get => keyChange.RawValue;
+            set => keyChange.RawValue = value;
         }
 
-        public Uri DirectoryUri
+        [DataMember(Name = "new-authz")]
+        public string NewAuthzUriString
         {
-            get => GetOrUpdateCachedValue(directoryUriString, ref directoryUriCache, StringToUriSafe);
-            set
-            {
-                directoryUriCache = Tuple.Create(value?.ToString(), value);
-                directoryUriString = directoryUriCache.Item1;
-            }
+            get => newAuthz.RawValue;
+            set => newAuthz.RawValue = value;
         }
 
-        private TOut GetOrUpdateCachedValue<TIn, TOut>(TIn value, ref Tuple<TIn, TOut> cache, Func<TIn, TOut> conversion, IEqualityComparer<TIn> comparer = null)
+        [DataMember(Name = "new-cert")]
+        public string NewCertUriString
         {
-            var localCache = cache;
-            if (localCache == null || !(comparer != null ? comparer.Equals(value, cache.Item1) : ReferenceEquals(value, localCache.Item1)))
-            {
-                localCache = Tuple.Create(value, conversion != null ? conversion(value) : default(TOut));
-                cache = localCache;
-            }
-            return localCache.Item2;
+            get => newCert.RawValue;
+            set => newCert.RawValue = value;
         }
 
-        private Uri StringToUriSafe(string value)
+        [DataMember(Name = "new-reg")]
+        public string NewRegistrationUriString
         {
-            try { return new Uri(value); }
-            catch (UriFormatException) { return null; }
-            catch (ArgumentNullException) { return null; }
+            get => newReg.RawValue;
+            set => newReg.RawValue = value;
+        }
+
+        [DataMember(Name = "revoke-cert")]
+        public string RevokeCertUriString
+        {
+            get => revokeCert.RawValue;
+            set => revokeCert.RawValue = value;
+        }
+
+        public AcmeDirectory()
+        {
+            keyChange = new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
+            newAuthz = new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
+            newCert = new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
+            newReg = new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
+            revokeCert = new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
         }
     }
 }
