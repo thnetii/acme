@@ -23,11 +23,25 @@ namespace THNETII.Acme.Client
             set => keyChange.RawValue = value;
         }
 
+        [IgnoreDataMember]
+        public Uri KeyChangeUri
+        {
+            get => keyChange.ConvertedValue;
+            set => keyChange.ConvertedValue = value;
+        }
+
         [DataMember(Name = "new-authz")]
         public string NewAuthzUriString
         {
             get => newAuthz.RawValue;
             set => newAuthz.RawValue = value;
+        }
+
+        [IgnoreDataMember]
+        public  Uri NewAuthzUri
+        {
+            get => newAuthz.ConvertedValue;
+            set => newAuthz.ConvertedValue = value;
         }
 
         [DataMember(Name = "new-cert")]
@@ -37,6 +51,13 @@ namespace THNETII.Acme.Client
             set => newCert.RawValue = value;
         }
 
+        [IgnoreDataMember]
+        public Uri NewCertUri
+        {
+            get => newCert.ConvertedValue;
+            set => newCert.ConvertedValue = value;
+        }
+
         [DataMember(Name = "new-reg")]
         public string NewRegistrationUriString
         {
@@ -44,11 +65,25 @@ namespace THNETII.Acme.Client
             set => newReg.RawValue = value;
         }
 
+        [IgnoreDataMember]
+        public Uri NewRegistrationUri
+        {
+            get => newReg.ConvertedValue;
+            set => newReg.ConvertedValue = value;
+        }
+
         [DataMember(Name = "revoke-cert")]
         public string RevokeCertUriString
         {
             get => revokeCert.RawValue;
             set => revokeCert.RawValue = value;
+        }
+
+        [IgnoreDataMember]
+        public Uri RevokeCertUri
+        {
+            get => revokeCert.ConvertedValue;
+            set => revokeCert.ConvertedValue = value;
         }
 
         public AcmeDirectory()
