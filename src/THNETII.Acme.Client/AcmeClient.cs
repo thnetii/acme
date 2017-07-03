@@ -34,38 +34,6 @@ namespace THNETII.Acme.Client
 
         private static JsonSerializer jsonSerializer = JsonSerializer.CreateDefault();
 
-        public static Task<AcmeClient> CreateAsync(string directoryUriString)
-        {
-            directoryUriString.ThrowIfNullOrWhiteSpace(nameof(directoryUriString));
-            Uri directoryUri;
-            try { directoryUri = new Uri(directoryUriString); }
-            catch (UriFormatException uriFmtExcept) { throw new ArgumentException(uriFmtExcept.Message, nameof(directoryUriString), uriFmtExcept); }
-            return CreateInternalAsync(new HttpClient(), directoryUri);
-        }
-
-        public static Task<AcmeClient> CreateAsync(Uri uri)
-        {
-            if (uri == null) throw new ArgumentNullException(nameof(uri));
-            var httpClient = new HttpClient();
-            return CreateInternalAsync(httpClient, uri);
-        }
-
-        public static Task<AcmeClient> CreateAsync(HttpClient httpClient, string directoryUriString)
-        {
-            directoryUriString.ThrowIfNullOrWhiteSpace(nameof(directoryUriString));
-            Uri directoryUri;
-            try { directoryUri = new Uri(directoryUriString); }
-            catch (UriFormatException uriFmtExcept) { throw new ArgumentException(uriFmtExcept.Message, nameof(directoryUriString), uriFmtExcept); }
-            return CreateInternalAsync(httpClient ?? throw new ArgumentNullException(nameof(httpClient)), directoryUri);
-        }
-
-        public static Task<AcmeClient> CreateAsync(HttpClient httpClient, Uri directoryUri) => CreateInternalAsync(httpClient ?? throw new ArgumentNullException(nameof(httpClient)), directoryUri ?? throw new ArgumentNullException(nameof(directoryUri)));
-
-        private static Task<AcmeClient> CreateInternalAsync(HttpClient httpClient, Uri uri)
-        {
-            throw new NotImplementedException();
-        }
-
         private readonly SemaphoreSlim nonce_guard = new SemaphoreSlim(initialCount: 0, maxCount: 1);
         private readonly HttpClient httpClient;
         private AcmeDirectory directory;
