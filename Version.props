@@ -3,7 +3,7 @@
   <PropertyGroup Label="VersionDefaults">
     <VersionMajor Condition="'$(VersionMajor)' == ''">0</VersionMajor>
     <VersionMinor Condition="'$(VersionMinor)' == ''">0</VersionMinor>
-    <VersionRevision Condition="'$(VersionRevision)' == ''">1</VersionRevision>
+    <VersionRevision Condition="'$(VersionRevision)' == ''">2</VersionRevision>
     <AcmeIetf>acmedraft02</AcmeIetf>
   </PropertyGroup>
   <PropertyGroup>
