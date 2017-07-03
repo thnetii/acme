@@ -43,6 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{4815
 		.vscode\tasks.json = .vscode\tasks.json
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.Cli", "dotnet-common\src\THNETII.Common.Cli\THNETII.Common.Cli.csproj", "{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{301807F9-2098-45F8-813F-7B53F8ADCB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{301807F9-2098-45F8-813F-7B53F8ADCB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{301807F9-2098-45F8-813F-7B53F8ADCB38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,5 +93,6 @@ Global
 		{F78C371B-09E2-43C6-BC2C-B14EC50CA7AC} = {40030D25-BA09-4EEC-9EE2-81EE22E8A4AD}
 		{301807F9-2098-45F8-813F-7B53F8ADCB38} = {B8B75351-572E-46FF-B675-F25E12193D59}
 		{48153BA2-F227-49FC-BEB6-8ABC24D47217} = {24DFF068-7CAE-41CF-B2B9-1C42E2AEA400}
+		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED} = {B8B75351-572E-46FF-B675-F25E12193D59}
 	EndGlobalSection
 EndGlobal
