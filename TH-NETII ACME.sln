@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{24DFF068-7CAE-41CF-B2B9-1C42E2AEA400}"
 	ProjectSection(SolutionItems) = preProject
@@ -35,6 +35,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Security.JOSE", "do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.Test", "dotnet-common\test\THNETII.Common.Test\THNETII.Common.Test.csproj", "{F78C371B-09E2-43C6-BC2C-B14EC50CA7AC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Acme.Client.Cli", "src\THNETII.Acme.Client.Cli\THNETII.Acme.Client.Cli.csproj", "{301807F9-2098-45F8-813F-7B53F8ADCB38}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{48153BA2-F227-49FC-BEB6-8ABC24D47217}"
+	ProjectSection(SolutionItems) = preProject
+		.vscode\launch.json = .vscode\launch.json
+		.vscode\tasks.json = .vscode\tasks.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +69,10 @@ Global
 		{F78C371B-09E2-43C6-BC2C-B14EC50CA7AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F78C371B-09E2-43C6-BC2C-B14EC50CA7AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F78C371B-09E2-43C6-BC2C-B14EC50CA7AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{301807F9-2098-45F8-813F-7B53F8ADCB38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{301807F9-2098-45F8-813F-7B53F8ADCB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{301807F9-2098-45F8-813F-7B53F8ADCB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{301807F9-2098-45F8-813F-7B53F8ADCB38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,5 +85,7 @@ Global
 		{47263FBA-FE4D-4226-80BC-1C533D957083} = {B8B75351-572E-46FF-B675-F25E12193D59}
 		{CCAFEB8C-99BB-42BA-ABEC-81E6D92A50B7} = {B8B75351-572E-46FF-B675-F25E12193D59}
 		{F78C371B-09E2-43C6-BC2C-B14EC50CA7AC} = {40030D25-BA09-4EEC-9EE2-81EE22E8A4AD}
+		{301807F9-2098-45F8-813F-7B53F8ADCB38} = {B8B75351-572E-46FF-B675-F25E12193D59}
+		{48153BA2-F227-49FC-BEB6-8ABC24D47217} = {24DFF068-7CAE-41CF-B2B9-1C42E2AEA400}
 	EndGlobalSection
 EndGlobal
