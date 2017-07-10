@@ -13,55 +13,49 @@ namespace THNETII.Acme.Client.Cli
     {
         public static int Main(string[] args)
         {
-            var cliapp = new CliApplication<CliCommand>()
+            var cliapp = new CliApplication<CliCommand>();
+            cliapp
+                .Configuration(configBuilder =>
+                {
+                    var assemblyFileName = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Program)).Assembly.Location;
+                    string executableDirectory;
+                    try { executableDirectory = Path.GetDirectoryName(assemblyFileName); }
+                    catch (ArgumentException) { executableDirectory = null; }
+                    catch (PathTooLongException) { executableDirectory = null; }
+                    if (!string.IsNullOrWhiteSpace(executableDirectory) && !string.Equals(Directory.GetCurrentDirectory(), executableDirectory, StringComparison.OrdinalIgnoreCase))
+                    {
+                        configBuilder.AddJsonFile(Path.Combine(executableDirectory, "appsettings.json"), optional: true);
+#if DEBUG
+                        configBuilder.AddJsonFile(Path.Combine(executableDirectory, "appsettings.Debug.json"), optional: true);
+#endif // DEBUG
+                    }
+                    configBuilder.AddJsonFile("appsettings.json", optional: true);
+#if DEBUG
+                    configBuilder.AddJsonFile("appsettings.Debug.json", optional: true);
+#endif // DEBUG
+                    configBuilder.AddEnvironmentVariables();
+
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddLogging();
+                })
                 .AddHelpOption()
                 .AddVersionOption()
                 .AddOption("-d|--directory", "ACME directory URL", CommandOptionType.SingleValue, true, (directoryOption, configDict) => configDict[$"Acme{KeyDelimiter}Directory"] = directoryOption.Value())
-                .AddSubCommand<DirectoryCommand>("directory", "", subCliBuilder =>
-                {
-                })
-                .PrepareServiceProvider(serviceProvider =>
-                {
-                    var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
-                    loggerFactory?
-                        .AddDebug()
-                        .AddConsole(serviceProvider.GetService<IConfiguration>()?.GetSection("Logging"))
-                        ;
-                })
+                //.AddSubCommand<DirectoryCommand>("directory", subCliBuilder =>
+                //{
+                //})
                 ;
 
-            cliapp.ServiceCollection
-                .AddLogging()
-                ;
-
-            var assemblyFileName = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Program)).Assembly.Location;
-            string executableDirectory;
-            try { executableDirectory = Path.GetDirectoryName(assemblyFileName); }
-            catch (ArgumentException) { executableDirectory = null; }
-            catch (PathTooLongException) { executableDirectory = null; }
-            if (!string.IsNullOrWhiteSpace(executableDirectory) && !string.Equals(Directory.GetCurrentDirectory(), executableDirectory, StringComparison.OrdinalIgnoreCase))
+            cliapp.Executing += (sender, serviceProvider) =>
             {
-                cliapp.ConfigurationBuilder
-                    .AddJsonFile(Path.Combine(executableDirectory, "appsettings.json"), optional: true)
-#if DEBUG
-                    .AddJsonFile(Path.Combine(executableDirectory, "appsettings.Debug.json"), optional: true)
-#endif // DEBUG
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                loggerFactory?
+                    .AddDebug()
+                    .AddConsole(serviceProvider.GetService<IConfiguration>()?.GetSection("Logging"))
                     ;
-            }
-            cliapp.ConfigurationBuilder
-                .AddJsonFile("appsettings.json", optional: true)
-#if DEBUG
-                .AddJsonFile("appsettings.Debug.json", optional: true)
-#endif // DEBUG
-                ;
-            cliapp.ConfigurationBuilder
-                .AddEnvironmentVariables()
-                ;
-            cliapp.AddOption("-c|--config", "Configuration file", CommandOptionType.SingleValue, true, (configOption, _) =>
-            {
-                foreach (var configOptionFilePath in configOption.Values)
-                    cliapp.ConfigurationBuilder.AddJsonFile(configOptionFilePath);
-            });
+            };
 
             return cliapp.Execute(args ?? new string[0]);
         }
