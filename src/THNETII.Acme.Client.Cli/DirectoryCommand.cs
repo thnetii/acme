@@ -15,13 +15,13 @@ namespace THNETII.Acme.Client.Cli
         public override int Run(CommandLineApplication app)
         {
             try { throw new NotImplementedException(); }
-            catch (Exception except) when (LogCritical(except)) { throw; }
+            catch (Exception except) when (LogCritical(except)) { return 1; }
         }
 
         private bool LogCritical(Exception except)
         {
-            Logger?.LogCritical(default(EventId), except, null);
-            return false;
+            Logger?.LogCritical(default(EventId), except, "An unexpected error occurred.");
+            return true;
         }
     }
 }

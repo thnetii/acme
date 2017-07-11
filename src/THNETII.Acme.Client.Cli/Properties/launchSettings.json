@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "THNETII.Acme.Client.Cli": {
+      "commandName": "Project"
+    }
+  }
+}
