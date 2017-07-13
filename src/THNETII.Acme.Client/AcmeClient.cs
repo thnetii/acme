@@ -23,19 +23,21 @@ namespace THNETII.Acme.Client
         {
             var ai = typeof(AcmeClient).GetTypeInfo().Assembly;
             var ver = ai.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-            httpUserAgentProduct = ai.FullName;
-            httpUserAgentVersion = ver ?? ai.GetName().Version.ToString();
+            AssemblyName an = ai.GetName();
+            httpUserAgentProduct = an.Name;
+            httpUserAgentVersion = ver ?? an.Version.ToString();
         }
 
         private static HttpRequestMessage SetUserAgent(HttpRequestMessage httpReqMsg)
         {
             //httpReqMsg.Headers.UserAgent.Clear();
-            httpReqMsg.Headers.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue(httpUserAgentProduct, httpUserAgentVersion));
+            httpReqMsg.Headers.UserAgent.Add(new ProductInfoHeaderValue(httpUserAgentProduct, httpUserAgentVersion));
             return httpReqMsg;
         }
 
         private static JsonSerializer jsonSerializer = JsonSerializer.CreateDefault();
 
+        private readonly SemaphoreSlim directory_guard = new SemaphoreSlim(initialCount: 0, maxCount: 1);
         private readonly SemaphoreSlim nonce_guard = new SemaphoreSlim(initialCount: 0, maxCount: 1);
         private readonly HttpClient httpClient;
         private string replayNonce;
@@ -65,7 +67,6 @@ namespace THNETII.Acme.Client
 
         private Task<AcmeDirectory> LoadDirectoryAsync()
         {
-            Task<AcmeDirectory> resultTask;
             using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, configuration.DirectoryUrl))
             {
                 httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
