@@ -3,11 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 using THNETII.Common.Cli;
 
 namespace THNETII.Acme.Client.Cli
 {
-    internal class DirectoryCommand : CliCommand
+    internal class DirectoryCommand : CliAsyncCommand
     {
         private readonly IServiceProvider serviceProvider;
 
@@ -20,7 +21,7 @@ namespace THNETII.Acme.Client.Cli
             this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
-        public override int Run(CommandLineApplication app)
+        public override async Task<int> RunAsync(CommandLineApplication app)
         {
             if (string.IsNullOrWhiteSpace(Configuration?[Program.AcmeDirectoryConfigKey]))
             {
@@ -29,7 +30,7 @@ namespace THNETII.Acme.Client.Cli
             }
 
             var acmeClient = serviceProvider.GetRequiredService<AcmeClient>();
-            app.Out.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(acmeClient.Directory, Newtonsoft.Json.Formatting.Indented));
+            await app.Out.WriteLineAsync(Newtonsoft.Json.JsonConvert.SerializeObject(acmeClient.Directory, Newtonsoft.Json.Formatting.Indented));
             return 0;
         }
 
