@@ -1,6 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <Import Project="..\..\Paths.props" />
+
+  <PropertyGroup>
+    <Product>TH-NETII ACME Client Command-Line Interface</Product>
+    <Description>Command-Line interface for the .NET Core client for the Automatic Certificate Management Environment (ACME) protocol.</Description>
+  </PropertyGroup>
+  
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
@@ -9,7 +15,6 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <DebugType>portable</DebugType>
-    <Description></Description>
   </PropertyGroup>
 
   <Import Project="..\..\Common.props" />
@@ -27,6 +32,7 @@
     <!--<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="2.0.0-preview2-final" />-->
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>

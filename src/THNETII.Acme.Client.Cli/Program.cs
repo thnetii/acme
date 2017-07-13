@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Text;
 using THNETII.Common.Cli;
 using static Microsoft.Extensions.Configuration.ConfigurationPath;
 
@@ -14,6 +16,8 @@ namespace THNETII.Acme.Client.Cli
     {
         public static int Main(string[] args)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             var cli = new CliBuilder<CliCommand>(typeof(Program))
                 .Configuration(Configuration)
                 .ConfigureServices(ConfigureServices)
@@ -32,15 +36,33 @@ namespace THNETII.Acme.Client.Cli
 #endif
                     }
                 })
-                .AddSubCommand<DirectoryCommand>("directory", directoryCmdApp =>
+                .AddSubCommand<AboutCliCommand>("about", null, aboutCliApp =>
                 {
+                    SetSubCommandFullName(aboutCliApp, "Application About Command");
+                    aboutCliApp.Description = "Get extensive application and runtime information.";
+#if !DEBUG
+                    aboutCliApp.ShowInHelpText = false;
+#endif
+                })
+                .AddSubCommand<DirectoryCommand>("directory", null, directoryCmdApp =>
+                {
+                    SetSubCommandFullName(directoryCmdApp, "ACME Directory Command");
                     directoryCmdApp.Description = "Print ACME directory";
-                }, null)
+                })
                 .Build();
             cli.ExtendedHelpText = @"
 Command names can be shortened.
 'directory' and 'dir' both match the directory command.";
             return cli.Execute(args ?? new string[0]);
+        }
+
+        private static void SetSubCommandFullName(CommandLineApplication directoryCmdApp, string appendSubCommmandFullName)
+        {
+            var directoryFullNameBuilder = new StringBuilder();
+            using (var parentFullNameReader = new StringReader(directoryCmdApp.Parent?.FullName ?? string.Empty))
+                directoryFullNameBuilder.AppendLine(parentFullNameReader.ReadLine());
+            directoryFullNameBuilder.AppendFormat(appendSubCommmandFullName);
+            directoryCmdApp.FullName = directoryFullNameBuilder.ToString();
         }
 
         private static readonly string LogLevelConfigKey = $"Logging{KeyDelimiter}LogLevel{KeyDelimiter}Default";
@@ -91,6 +113,10 @@ Command names can be shortened.
             configBuilder.AddEnvironmentVariables();
         }
 
-        private static void ConfigureServices(IServiceCollection services) => services.AddLogging();
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddLogging();
+            services.AddSingleton(typeof(Program).GetTypeInfo().Assembly);
+        }
     }
 }
