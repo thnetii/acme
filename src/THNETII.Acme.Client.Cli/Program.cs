@@ -24,7 +24,7 @@ namespace THNETII.Acme.Client.Cli
                 .PreRunCommand(OnRun)
                 .AddHelpOption()
                 .AddVersionOption()
-                .AddOption("-d|--directory=<URL>", "ACME directory URL", CommandOptionType.SingleValue, true, (directoryOption, configDict) => configDict[$"Acme{KeyDelimiter}Directory"] = directoryOption.Value())
+                .AddOption("-d|--directory=<URL>", "ACME directory URL", CommandOptionType.SingleValue, true, (directoryOption, configDict) => configDict[AcmeDirectoryConfigKey] = directoryOption.Value())
                 .AddOption("-v|--verbose", "Verbose Output", CommandOptionType.NoValue, (verboseOption, configDict) =>
                 {
                     if (verboseOption.HasValue())
@@ -32,7 +32,7 @@ namespace THNETII.Acme.Client.Cli
 #if DEBUG
                         configDict[LogLevelConfigKey] = nameof(LogLevel.Trace);
 #else
-                        configDict[LogLevelConfigKey] = nameof(LogLevel.Warning);
+                        configDict[LogLevelConfigKey] = nameof(LogLevel.Information);
 #endif
                     }
                 })
@@ -65,12 +65,15 @@ Command names can be shortened.
             directoryCmdApp.FullName = directoryFullNameBuilder.ToString();
         }
 
-        private static readonly string LogLevelConfigKey = $"Logging{KeyDelimiter}LogLevel{KeyDelimiter}Default";
+        internal static readonly string AcmeDirectoryConfigKey = $"Acme{KeyDelimiter}Directory";
+        internal static readonly string LogLevelConfigKey = $"Logging{KeyDelimiter}LogLevel{KeyDelimiter}Default";
 
         private static IDictionary<string, string> GetDefaultConfiguration()
         {
             return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
+                [AcmeDirectoryConfigKey] = LetsEncrypt.DirectoryUri,
+
 #if DEBUG
                 [LogLevelConfigKey] = nameof(LogLevel.Information)
 #else
@@ -117,6 +120,7 @@ Command names can be shortened.
         {
             services.AddLogging();
             services.AddSingleton(typeof(Program).GetTypeInfo().Assembly);
+            services.AddAcmeClient(serviceProvider => serviceProvider.GetService<IConfiguration>()?.GetSection("ACME"));
         }
     }
 }
