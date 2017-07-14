@@ -6,15 +6,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-using static THNETII.Acme.Client.UriSafeConverter;
+using THNETII.Common;
 
 namespace THNETII.Acme.Client
 {
-    public partial class AcmeClient
+    public class AcmeClient : IDisposable
     {
         private static readonly string httpUserAgentProduct;
         private static readonly string httpUserAgentVersion;
@@ -37,55 +35,97 @@ namespace THNETII.Acme.Client
 
         private static JsonSerializer jsonSerializer = JsonSerializer.CreateDefault();
 
-        private readonly SemaphoreSlim directory_guard = new SemaphoreSlim(initialCount: 0, maxCount: 1);
-        private readonly SemaphoreSlim nonce_guard = new SemaphoreSlim(initialCount: 0, maxCount: 1);
+        private readonly SemaphoreSlim nonce_guard = new SemaphoreSlim(1);
         private readonly HttpClient httpClient;
         private string replayNonce;
         private readonly ILogger<AcmeClient> logger;
-        private readonly AcmeConfiguration configuration;
-        private readonly Task<AcmeDirectory> directoryLoadTask;
+        private AcmeDirectory directory;
+        private readonly bool disposeHttpClient = false;
 
-        public AcmeDirectory Directory => directoryLoadTask.GetAwaiter().GetResult();
+        public Task<AcmeDirectory> InitDirectoryTask { get; }
 
-        private async Task<TResponse> ReadHttpResponse<TResponse>(Task<HttpResponseMessage> httpRespMsgTask)
+        public AcmeDirectory Directory => InitDirectoryTask?.GetAwaiter().GetResult();
+
+        private async Task<TResponse> ReadHttpResponse<TResponse>(Task<HttpResponseMessage> httpRespMsgTask, CancellationToken cancelToken = default(CancellationToken))
         {
-            using (var httpRespMsg = await httpRespMsgTask)
+            using (var httpResponseMessage = await httpRespMsgTask)
             {
-                logger?.LogInformation($"HTTP Response {{{nameof(httpRespMsg.StatusCode)}}} {{{nameof(httpRespMsg.ReasonPhrase)}}}", httpRespMsg.StatusCode, httpRespMsg.ReasonPhrase);
-                var httpRespStreamTask = httpRespMsg.Content.ReadAsStreamAsync();
-                replayNonce = httpRespMsg.Headers.TryGetValues("Replay-Nonce", out var replayNonces) ? replayNonces.FirstOrDefault() : null;
-                logger?.LogDebug($"Replay-Nonce: {{{nameof(replayNonce)}}}", replayNonce);
+                logger?.LogDebug($"Received HTTP Response {{{nameof(httpResponseMessage)}}}", httpResponseMessage);
+                var httpRespStreamTask = httpResponseMessage.Content.ReadAsStreamAsync();
+                replayNonce = httpResponseMessage.Headers.TryGetValues("Replay-Nonce", out var replayNonces) ? replayNonces.FirstOrDefault() : null;
                 logger?.LogTrace("Releasing Nonce guard");
                 nonce_guard.Release();
 
+                cancelToken.ThrowIfCancellationRequested();
                 using (var jsonRespRead = new JsonTextReader(new StreamReader(await httpRespStreamTask)))
                 {
+                    cancelToken.ThrowIfCancellationRequested();
                     return jsonSerializer.Deserialize<TResponse>(jsonRespRead);
                 }
             }
         }
 
-        private Task<AcmeDirectory> LoadDirectoryAsync()
+        public AcmeClient(string directoryUriString, HttpClient httpClient = null, ILogger<AcmeClient> logger = null)
+            : this(httpClient, logger)
         {
-            using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, configuration.DirectoryUrl))
-            {
-                httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                SetUserAgent(httpRequestMessage);
+            InitDirectoryTask = LoadDirectoryAsync(directoryUriString.ThrowIfNullOrWhiteSpace(nameof(directoryUriString)));
+        }
 
-                nonce_guard.Wait();
-                logger?.LogTrace("Nonce guard locked.");
+        public AcmeClient(Uri directoryUri, HttpClient httpClient = null, ILogger<AcmeClient> logger = null)
+            : this(httpClient, logger)
+        {
+            InitDirectoryTask = LoadDirectoryAsync(directoryUri.ThrowIfNull(nameof(directoryUri)));
+        }
+
+        private Task<AcmeDirectory> LoadDirectoryAsync(string directoryUri, CancellationToken cancelToken = default(CancellationToken))
+        {
+            HttpRequestMessage HttpRequestFromUriString() => new HttpRequestMessage(HttpMethod.Get, directoryUri);
+            return LoadDirectoryAsync(HttpRequestFromUriString, cancelToken);
+        }
+
+        private Task<AcmeDirectory> LoadDirectoryAsync(Uri directoryUri, CancellationToken cancelToken = default(CancellationToken))
+        {
+            HttpRequestMessage HttpRequestFromUri() => new HttpRequestMessage(HttpMethod.Get, directoryUri);
+            return LoadDirectoryAsync(HttpRequestFromUri, cancelToken);
+        }
+
+        private async Task<AcmeDirectory> LoadDirectoryAsync(Func<HttpRequestMessage> requestMessageFactory, CancellationToken cancelToken = default(CancellationToken))
+        {
+            using (var httpRequestMessage = requestMessageFactory())
+            {
                 logger?.LogInformation($"Requesting ACME directory from {{{nameof(httpRequestMessage.RequestUri)}}}", httpRequestMessage.RequestUri);
-                return ReadHttpResponse<AcmeDirectory>(httpClient.SendAsync(httpRequestMessage));
+                directory = await LoadDirectoryAsyncWithHttpMessage(httpRequestMessage, cancelToken);
+                return directory;
             }
         }
 
-        public AcmeClient(HttpClient httpClient, AcmeConfiguration configuration, ILogger<AcmeClient> logger = null)
+        private Task<AcmeDirectory> LoadDirectoryAsyncWithHttpMessage(HttpRequestMessage httpRequestMessage, CancellationToken cancelToken = default(CancellationToken))
         {
-            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(HttpClient));
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            this.logger = logger;
+            httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            SetUserAgent(httpRequestMessage);
 
-            directoryLoadTask = LoadDirectoryAsync();
+            nonce_guard.Wait();
+            logger?.LogTrace($"Nonce guard locked");
+            logger?.LogDebug($"Sending HTTP Request {{{nameof(httpRequestMessage)}}}", httpRequestMessage);
+            return ReadHttpResponse<AcmeDirectory>(httpClient.SendAsync(httpRequestMessage, cancelToken));
+        }
+
+        private AcmeClient(HttpClient httpClient = null, ILogger<AcmeClient> logger = null)
+        {
+            if (httpClient == null)
+            {
+                this.httpClient = new HttpClient();
+                disposeHttpClient = true;
+            }
+            else
+                this.httpClient = httpClient;
+            this.logger = logger;
+        }
+
+        void IDisposable.Dispose()
+        {
+            if (disposeHttpClient)
+                httpClient.Dispose();
         }
     }
 }

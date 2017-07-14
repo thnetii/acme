@@ -5,8 +5,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using THNETII.Common.Cli;
 using static Microsoft.Extensions.Configuration.ConfigurationPath;
 
@@ -17,15 +18,22 @@ namespace THNETII.Acme.Client.Cli
         public static int Main(string[] args)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            CancellationTokenSource cts = new CancellationTokenSource();
+            Console.CancelKeyPress += (_, e) =>
+            {
+                cts.Cancel();
+                e.Cancel = true;
+            };
 
             var cli = new CliBuilder<CliCommand>(typeof(Program))
                 .Configuration(Configuration)
                 .ConfigureServices(ConfigureServices)
+                .ConfigureServices(services => services.AddSingleton(cts))
                 .PreRunCommand(OnRun)
                 .AddHelpOption()
                 .AddVersionOption()
                 .AddOption("-d|--directory=<URL>", "ACME directory URL", CommandOptionType.SingleValue, true, (directoryOption, configDict) => configDict[AcmeDirectoryConfigKey] = directoryOption.Value())
-                .AddOption("-v|--verbose", "Verbose Output", CommandOptionType.NoValue, (verboseOption, configDict) =>
+                .AddOption("-v|--verbose", "Verbose Output", CommandOptionType.NoValue, true, (verboseOption, configDict) =>
                 {
                     if (verboseOption.HasValue())
                     {
@@ -44,6 +52,9 @@ namespace THNETII.Acme.Client.Cli
                     aboutCliApp.ShowInHelpText = false;
 #endif
                 })
+#if DEBUG
+                .AddSubCommand<CancelCommand>("cancel", null, cancelCliApp => cancelCliApp.ShowInHelpText = false, throwOnUnexpectedArg: false)
+#endif // DEBUG
                 .AddSubCommand<DirectoryCommand>("directory", null, directoryCmdApp =>
                 {
                     SetSubCommandFullName(directoryCmdApp, "ACME Directory Command");
@@ -84,7 +95,8 @@ Command names can be shortened.
 
         private static void OnRun(CommandLineApplication command, IServiceProvider serviceProvider)
         {
-            serviceProvider.GetService<ILoggerFactory>()?
+            var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+            loggerFactory?
 #if DEBUG
                 .AddDebug(LogLevel.Trace)
 #else
@@ -92,6 +104,8 @@ Command names can be shortened.
 #endif
                 .AddConsole(serviceProvider.GetService<IConfiguration>()?.GetSection("Logging"))
                 ;
+            var programLogger = loggerFactory?.CreateLogger(typeof(Program));
+            Console.CancelKeyPress += (sender, e) => programLogger.LogDebug("Cancel Key Press detected: {cancelKey}", e.SpecialKey);
         }
 
         private static void Configuration(IConfigurationBuilder configBuilder)
@@ -119,8 +133,16 @@ Command names can be shortened.
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
-            services.AddSingleton(typeof(Program).GetTypeInfo().Assembly);
-            services.AddAcmeClient(serviceProvider => serviceProvider.GetService<IConfiguration>()?.GetSection("ACME"));
+            services.AddSingleton(System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Program)).Assembly);
+            services.AddSingleton(serviceProvider =>
+            {
+                var directoryUri = serviceProvider.GetService<IConfiguration>()?[AcmeDirectoryConfigKey];
+                var httpClient = serviceProvider.GetService<HttpClient>();
+                var acmeLogger = serviceProvider.GetService<ILogger<AcmeClient>>();
+
+                return new AcmeClient(directoryUri, httpClient, acmeLogger);
+            });
         }
+
     }
 }
