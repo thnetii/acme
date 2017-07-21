@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup Label="Common Package Metadata">
+    <Authors>Fredrik Høisæther Rasch</Authors>
+    <Product>TH-NETII Automatic Certificate Management Environment (ACME)</Product>
+    <Company>TH-NETII Rasch Solutions</Company>
+    <Copyright>Written by Fredrik Høisæther Rasch, $([System.DateTime]::Now.Year)</Copyright>
+  </PropertyGroup>
+  <PropertyGroup Label="Repository Metadata">
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/thnetii/acme.git</RepositoryUrl>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageLicenseUrl>https://github.com/thnetii/acme/raw/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/thnetii/acme</PackageProjectUrl>
+  </PropertyGroup>
+  <PropertyGroup Label="BasePath">
+    <BaseOutputPath>$([MSBuild]::ValueOrDefault(`$(SolutionDir)`, `$(MSBuildThisFileDirectory)`))bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$([MSBuild]::ValueOrDefault(`$(SolutionDir)`, `$(MSBuildThisFileDirectory)`))obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Label="Version">
+    <VersionPrefix>0.0.2</VersionPrefix>
+    <VersionSuffix>acmedraft02</VersionSuffix>
+    <FileVersion>$(VersionPrefix)</FileVersion>
+    <AssemblyVersion Condition="'$(BuildNumber)'==''">$(FileVersion)</AssemblyVersion>
+    <AssemblyVersion Condition="'$(BuildNumber)'!=''">$(FileVersion).$(BuildNumber)</AssemblyVersion>
+    <VersionSuffix Condition="'$(BuildNumber)'!='' And '$(VersionSuffix)'==''">$(VersionSuffix)b$(BuildNumber)</VersionSuffix>
+    <VersionSuffix Condition="'$(BuildNumber)'!='' And '$(VersionSuffix)'!=''">$(VersionSuffix)-b$(BuildNumber)</VersionSuffix>
+  </PropertyGroup>
+</Project>

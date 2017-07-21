@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project>
-  <Import Project="..\..\Paths.props" />
-  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
@@ -13,11 +11,6 @@
 
     <Description>TH-NETII ACME Unit Tests</Description>
   </PropertyGroup>
-
-  <Import Project="..\..\Common.props" />
-  <Import Project="..\..\Version.props" />
-
-  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
   <ItemGroup Label="ProjectReferences">
     <ProjectReference Include="..\..\src\THNETII.Acme.Client\THNETII.Acme.Client.csproj" />
