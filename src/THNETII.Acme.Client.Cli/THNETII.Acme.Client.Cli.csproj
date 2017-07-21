@@ -32,4 +32,10 @@
     <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common.Cli\THNETII.Common.Cli.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.Debug.json">
+      <DependentUpon>appsettings.json</DependentUpon>
+    </None>
+  </ItemGroup>
+
 </Project>
