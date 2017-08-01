@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{5A3AAF6E-0FA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "acme", "acme", "{53265252-9CA1-4793-BB1C-5A823CAA5785}"
 	ProjectSection(SolutionItems) = preProject
+		doc\acme\draft-ietf-acme-acme-02.html = doc\acme\draft-ietf-acme-acme-02.html
 		doc\acme\README.md = doc\acme\README.md
 	EndProjectSection
 EndProject
@@ -44,6 +45,19 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.Cli", "dotnet-common\src\THNETII.Common.Cli\THNETII.Common.Cli.csproj", "{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.DataContractSerializer", "dotnet-common\src\THNETII.Common.DataContractSerializer\THNETII.Common.DataContractSerializer.csproj", "{F9CF4273-43C6-4835-823E-C4E05037F947}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet-common", "dotnet-common", "{75F073C8-2EA9-4940-8F89-D99F5495FB71}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rfc", "rfc", "{7C0607CB-BD78-4E56-BB53-D40285D41D89}"
+	ProjectSection(SolutionItems) = preProject
+		dotnet-common\doc\rfc\rfc7165.html = dotnet-common\doc\rfc\rfc7165.html
+		dotnet-common\doc\rfc\rfc7515.html = dotnet-common\doc\rfc\rfc7515.html
+		dotnet-common\doc\rfc\rfc7516.html = dotnet-common\doc\rfc\rfc7516.html
+		dotnet-common\doc\rfc\rfc7517.html = dotnet-common\doc\rfc\rfc7517.html
+		dotnet-common\doc\rfc\rfc7518.html = dotnet-common\doc\rfc\rfc7518.html
+		dotnet-common\doc\rfc\rfc7519.html = dotnet-common\doc\rfc\rfc7519.html
+		dotnet-common\doc\rfc\rfc7520.html = dotnet-common\doc\rfc\rfc7520.html
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,5 +113,7 @@ Global
 		{48153BA2-F227-49FC-BEB6-8ABC24D47217} = {24DFF068-7CAE-41CF-B2B9-1C42E2AEA400}
 		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED} = {B8B75351-572E-46FF-B675-F25E12193D59}
 		{F9CF4273-43C6-4835-823E-C4E05037F947} = {B8B75351-572E-46FF-B675-F25E12193D59}
+		{75F073C8-2EA9-4940-8F89-D99F5495FB71} = {5A3AAF6E-0FA3-4317-8AAE-0D38BA05F97E}
+		{7C0607CB-BD78-4E56-BB53-D40285D41D89} = {75F073C8-2EA9-4940-8F89-D99F5495FB71}
 	EndGlobalSection
 EndGlobal
