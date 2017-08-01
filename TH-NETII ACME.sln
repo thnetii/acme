@@ -59,6 +59,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rfc", "rfc", "{7C0607CB-BD7
 		dotnet-common\doc\rfc\rfc7520.html = dotnet-common\doc\rfc\rfc7520.html
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.Cli.About", "dotnet-common\src\THNETII.Common.Cli.About\THNETII.Common.Cli.About.csproj", "{1536902A-559B-4DB9-9144-01278CAC5507}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,10 @@ Global
 		{F9CF4273-43C6-4835-823E-C4E05037F947}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9CF4273-43C6-4835-823E-C4E05037F947}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9CF4273-43C6-4835-823E-C4E05037F947}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1536902A-559B-4DB9-9144-01278CAC5507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1536902A-559B-4DB9-9144-01278CAC5507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1536902A-559B-4DB9-9144-01278CAC5507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1536902A-559B-4DB9-9144-01278CAC5507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,5 +121,6 @@ Global
 		{F9CF4273-43C6-4835-823E-C4E05037F947} = {B8B75351-572E-46FF-B675-F25E12193D59}
 		{75F073C8-2EA9-4940-8F89-D99F5495FB71} = {5A3AAF6E-0FA3-4317-8AAE-0D38BA05F97E}
 		{7C0607CB-BD78-4E56-BB53-D40285D41D89} = {75F073C8-2EA9-4940-8F89-D99F5495FB71}
+		{1536902A-559B-4DB9-9144-01278CAC5507} = {B8B75351-572E-46FF-B675-F25E12193D59}
 	EndGlobalSection
 EndGlobal

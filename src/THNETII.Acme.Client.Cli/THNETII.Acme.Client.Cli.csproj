@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\THNETII.Acme.Client\THNETII.Acme.Client.csproj" />
     <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common.Cli\THNETII.Common.Cli.csproj" />
+    <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common.Cli.About\THNETII.Common.Cli.About.csproj" />
   </ItemGroup>
 
   <ItemGroup>
