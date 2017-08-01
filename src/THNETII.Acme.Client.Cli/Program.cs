@@ -32,7 +32,17 @@ namespace THNETII.Acme.Client.Cli
                 .AddHelpOption()
                 .AddVersionOption()
                 .AddOption("-d|--directory=<URL>", "ACME directory URL", CommandOptionType.SingleValue, true, (directoryOption, configDict) => configDict[AcmeDirectoryConfigKey] = directoryOption.Value())
-                .AddOption("-v|--verbose", "Verbose Output", CommandOptionType.NoValue, true, ReadVerboseCommandLineOption)
+                .AddOption("-v|--verbose", "Verbose Output", CommandOptionType.NoValue, true, (verboseOption, configDict) =>
+                {
+                    if (verboseOption.HasValue())
+                    {
+#if DEBUG
+                        configDict[LogLevelConfigKey] = nameof(LogLevel.Trace);
+#else
+                        configDict[LogLevelConfigKey] = nameof(LogLevel.Information);
+#endif
+                    }
+                })
                 .AddSubCommand<AboutCliCommand>("about", null, aboutCliApp =>
                 {
                     SetSubCommandFullName(aboutCliApp, "Application About Command");
@@ -48,6 +58,15 @@ namespace THNETII.Acme.Client.Cli
                 {
                     SetSubCommandFullName(directoryCmdApp, "ACME Directory Command");
                     directoryCmdApp.Description = "Print ACME directory";
+                })
+                .AddSubCommand<AccountCommand>("account-key", accountCliApp =>
+                {
+                    accountCliApp.AddOption("-t|--type <TYPE>", "JWK Type (EC, RSA, oct)", CommandOptionType.SingleValue, true,
+                        (opt, config) => ConfigurationPath.Combine());
+                }, accountCmdApp =>
+                {
+                    SetSubCommandFullName(accountCmdApp, "ACME Account Key Management Command");
+                    accountCmdApp.Description = "Creates or imports an account key for ACME";
                 })
                 .AddSubCommand<RegisterCommand>("register", null, registerCmdApp =>
                 {
@@ -138,16 +157,5 @@ Command names can be shortened.
             });
         }
 
-        private static void ReadVerboseCommandLineOption(CommandOption verboseOption, IDictionary<string, string> configDict)
-        {
-            if (verboseOption.HasValue())
-            {
-#if DEBUG
-                configDict[LogLevelConfigKey] = nameof(LogLevel.Trace);
-#else
-                configDict[LogLevelConfigKey] = nameof(LogLevel.Information);
-#endif
-            }
-        }
     }
 }
