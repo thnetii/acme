@@ -9,7 +9,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using THNETII.Common.Cli;
-using static Microsoft.Extensions.Configuration.ConfigurationPath;
 
 namespace THNETII.Acme.Client.Cli
 {
@@ -71,8 +70,8 @@ Command names can be shortened.
             directoryCmdApp.FullName = directoryFullNameBuilder.ToString();
         }
 
-        internal static readonly string AcmeDirectoryConfigKey = $"Acme{KeyDelimiter}Directory";
-        internal static readonly string LogLevelConfigKey = $"Logging{KeyDelimiter}LogLevel{KeyDelimiter}Default";
+        internal static readonly string AcmeDirectoryConfigKey = ConfigurationPath.Combine("Acme", "Directory");
+        internal static readonly string LogLevelConfigKey = ConfigurationPath.Combine("Logging", nameof(LogLevel), "Default");
 
         private static IDictionary<string, string> GetDefaultConfiguration()
         {
