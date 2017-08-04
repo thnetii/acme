@@ -12,6 +12,10 @@ namespace THNETII.Acme.Client
     /// </remarks>
     public enum AcmeErrorType
     {
+        /// <summary>
+        /// The type of the error is unknown.
+        /// </summary>
+        /// <remarks>This value will be used in cases when a custom error type URN is used or the &quot;type&quot; property is absent.</remarks>
         Unknown = 0,
 
         /// <summary>
