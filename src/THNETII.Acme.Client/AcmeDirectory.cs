@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using THNETII.Common;
 
@@ -10,11 +9,11 @@ namespace THNETII.Acme.Client
     [DataContract]
     public class AcmeDirectory
     {
-        private DuplexConversionTuple<string, Uri> keyChange;
-        private DuplexConversionTuple<string, Uri> newAuthz;
-        private DuplexConversionTuple<string, Uri> newCert;
-        private DuplexConversionTuple<string, Uri> newReg;
-        private DuplexConversionTuple<string, Uri> revokeCert;
+        private readonly DuplexConversionTuple<string, Uri> keyChange;
+        private readonly DuplexConversionTuple<string, Uri> newAuthz;
+        private readonly DuplexConversionTuple<string, Uri> newCert;
+        private readonly DuplexConversionTuple<string, Uri> newReg;
+        private readonly DuplexConversionTuple<string, Uri> revokeCert;
 
         [DataMember(Name = "key-change")]
         public string KeyChangeUriString
@@ -38,7 +37,7 @@ namespace THNETII.Acme.Client
         }
 
         [IgnoreDataMember]
-        public  Uri NewAuthzUri
+        public Uri NewAuthzUri
         {
             get => newAuthz.ConvertedValue;
             set => newAuthz.ConvertedValue = value;
@@ -85,6 +84,15 @@ namespace THNETII.Acme.Client
             get => revokeCert.ConvertedValue;
             set => revokeCert.ConvertedValue = value;
         }
+
+        [DataMember(Name = "meta", IsRequired = false, EmitDefaultValue = false)]
+        public AcmeDirectoryMetadata Metadata { get; set; }
+
+        [IgnoreDataMember]
+        public string TermOrServiceUriString => Metadata?.TermOrServiceUriString;
+
+        [IgnoreDataMember]
+        public Uri TermsOfServiceUri => Metadata?.TermsOfServiceUri;
 
         public AcmeDirectory()
         {
