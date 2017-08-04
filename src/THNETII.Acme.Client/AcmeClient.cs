@@ -93,6 +93,7 @@ namespace THNETII.Acme.Client
         {
             using (var httpRequestMessage = requestMessageFactory())
             {
+                httpRequestMessage.Headers.Accept.ParseAdd("application/json");
                 logger?.LogInformation($"Requesting ACME directory from {{{nameof(httpRequestMessage.RequestUri)}}}", httpRequestMessage.RequestUri);
                 directory = await LoadDirectoryAsyncWithHttpMessage(httpRequestMessage, cancelToken);
                 return directory;
