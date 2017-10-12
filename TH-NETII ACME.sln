@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{24DFF068-7CAE-41CF-B2B9-1C42E2AEA400}"
 	ProjectSection(SolutionItems) = preProject
@@ -42,8 +42,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{4815
 		.vscode\tasks.json = .vscode\tasks.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.Cli", "dotnet-common\src\THNETII.Common.Cli\THNETII.Common.Cli.csproj", "{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.DataContractSerializer", "dotnet-common\src\THNETII.Common.DataContractSerializer\THNETII.Common.DataContractSerializer.csproj", "{F9CF4273-43C6-4835-823E-C4E05037F947}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet-common", "dotnet-common", "{75F073C8-2EA9-4940-8F89-D99F5495FB71}"
@@ -58,8 +56,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rfc", "rfc", "{7C0607CB-BD7
 		dotnet-common\doc\rfc\rfc7519.html = dotnet-common\doc\rfc\rfc7519.html
 		dotnet-common\doc\rfc\rfc7520.html = dotnet-common\doc\rfc\rfc7520.html
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.Cli.About", "dotnet-common\src\THNETII.Common.Cli.About\THNETII.Common.Cli.About.csproj", "{1536902A-559B-4DB9-9144-01278CAC5507}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,18 +87,10 @@ Global
 		{301807F9-2098-45F8-813F-7B53F8ADCB38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{301807F9-2098-45F8-813F-7B53F8ADCB38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{301807F9-2098-45F8-813F-7B53F8ADCB38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9CF4273-43C6-4835-823E-C4E05037F947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9CF4273-43C6-4835-823E-C4E05037F947}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9CF4273-43C6-4835-823E-C4E05037F947}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9CF4273-43C6-4835-823E-C4E05037F947}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1536902A-559B-4DB9-9144-01278CAC5507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1536902A-559B-4DB9-9144-01278CAC5507}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1536902A-559B-4DB9-9144-01278CAC5507}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1536902A-559B-4DB9-9144-01278CAC5507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,10 +105,11 @@ Global
 		{F78C371B-09E2-43C6-BC2C-B14EC50CA7AC} = {40030D25-BA09-4EEC-9EE2-81EE22E8A4AD}
 		{301807F9-2098-45F8-813F-7B53F8ADCB38} = {B8B75351-572E-46FF-B675-F25E12193D59}
 		{48153BA2-F227-49FC-BEB6-8ABC24D47217} = {24DFF068-7CAE-41CF-B2B9-1C42E2AEA400}
-		{7F69EDFE-57AB-40DE-9013-F10B5C7899ED} = {B8B75351-572E-46FF-B675-F25E12193D59}
 		{F9CF4273-43C6-4835-823E-C4E05037F947} = {B8B75351-572E-46FF-B675-F25E12193D59}
 		{75F073C8-2EA9-4940-8F89-D99F5495FB71} = {5A3AAF6E-0FA3-4317-8AAE-0D38BA05F97E}
 		{7C0607CB-BD78-4E56-BB53-D40285D41D89} = {75F073C8-2EA9-4940-8F89-D99F5495FB71}
-		{1536902A-559B-4DB9-9144-01278CAC5507} = {B8B75351-572E-46FF-B675-F25E12193D59}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {259D194A-FF97-4D32-AC2D-5AB88CDC4059}
 	EndGlobalSection
 EndGlobal
