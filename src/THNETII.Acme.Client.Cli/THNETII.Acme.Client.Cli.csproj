@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.1.1-beta" />
+    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.2" />
@@ -29,6 +29,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\THNETII.Acme.Client\THNETII.Acme.Client.csproj" />
+    <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common.Cli\THNETII.Common.Cli.csproj" />
+    <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common.Cli.About\THNETII.Common.Cli.About.csproj" />
   </ItemGroup>
 
   <ItemGroup>
