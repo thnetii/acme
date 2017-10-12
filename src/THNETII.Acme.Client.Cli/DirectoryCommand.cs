@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.CommandLineUtils;
+﻿using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -28,13 +27,6 @@ namespace THNETII.Acme.Client.Cli
 
         public override async Task<int> RunAsync(CommandLineApplication app)
         {
-            string directoryUri = Configuration?[Program.AcmeDirectoryConfigKey];
-            if (string.IsNullOrWhiteSpace(directoryUri))
-            {
-                Logger?.LogCritical("Missing required option: {option}", "directory");
-                return 1;
-            }
-
             try
             {
                 var directory = await acmeClient.InitDirectoryTask;
@@ -48,8 +40,7 @@ namespace THNETII.Acme.Client.Cli
 #if DEBUG
                     cancelExcept, 
 #endif // DEBUG
-                    $"Cancelled loading the ACME directory from {{{nameof(directoryUri)}}}", 
-                    directoryUri
+                    $"Cancelled loading the ACME directory."
                     );
                 return 1;
             }

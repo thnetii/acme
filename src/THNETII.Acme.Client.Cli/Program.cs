@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.CommandLineUtils;
+﻿using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -6,8 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
+using THNETII.Common;
 using THNETII.Common.Cli;
 
 namespace THNETII.Acme.Client.Cli
@@ -25,10 +27,13 @@ namespace THNETII.Acme.Client.Cli
             };
 
             var cli = new CliBuilder<CliCommand>(typeof(Program))
-                .Configuration(Configuration)
+#if DEBUG
+                .CreateDefault(debug: true)
+#else // !DEBUG
+                .CreateDefault()
+#endif
                 .ConfigureServices(ConfigureServices)
                 .ConfigureServices(services => services.AddSingleton(cts))
-                .PreRunCommand(OnRun)
                 .AddHelpOption()
                 .AddVersionOption()
                 .AddOption("-d|--directory=<URL>", "ACME directory URL", CommandOptionType.SingleValue, true, (directoryOption, configDict) => configDict[AcmeDirectoryConfigKey] = directoryOption.Value())
@@ -106,54 +111,16 @@ Command names can be shortened.
             };
         }
 
-        private static void OnRun(CommandLineApplication command, IServiceProvider serviceProvider)
-        {
-            var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
-            loggerFactory?
-#if DEBUG
-                .AddDebug(LogLevel.Trace)
-#else
-                .AddDebug(LogLevel.Information)
-#endif
-                .AddConsole(serviceProvider.GetService<IConfiguration>()?.GetSection("Logging"))
-                ;
-            var programLogger = loggerFactory?.CreateLogger(typeof(Program));
-            Console.CancelKeyPress += (sender, e) => programLogger.LogDebug("Cancel Key Press detected: {cancelKey}", e.SpecialKey);
-        }
-
-        private static void Configuration(IConfigurationBuilder configBuilder)
-        {
-            configBuilder.AddInMemoryCollection(GetDefaultConfiguration());
-            var assemblyFileName = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Program)).Assembly.Location;
-            string executableDirectory;
-            try { executableDirectory = Path.GetDirectoryName(assemblyFileName); }
-            catch (ArgumentException) { executableDirectory = null; }
-            catch (PathTooLongException) { executableDirectory = null; }
-            if (!string.IsNullOrWhiteSpace(executableDirectory) && !string.Equals(Directory.GetCurrentDirectory(), executableDirectory, StringComparison.OrdinalIgnoreCase))
-            {
-                configBuilder.AddJsonFile(Path.Combine(executableDirectory, "appsettings.json"), optional: true);
-#if DEBUG
-                configBuilder.AddJsonFile(Path.Combine(executableDirectory, "appsettings.Debug.json"), optional: true);
-#endif // DEBUG
-            }
-            configBuilder.AddJsonFile("appsettings.json", optional: true);
-#if DEBUG
-            configBuilder.AddJsonFile("appsettings.Debug.json", optional: true);
-#endif // DEBUG
-            configBuilder.AddEnvironmentVariables();
-        }
-
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging();
-            services.AddSingleton(System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(Program)).Assembly);
+            services.AddSingleton(typeof(Program).GetTypeInfo().Assembly);
             services.AddSingleton(serviceProvider =>
             {
                 var directoryUri = serviceProvider.GetService<IConfiguration>()?[AcmeDirectoryConfigKey];
                 var httpClient = serviceProvider.GetService<HttpClient>();
                 var acmeLogger = serviceProvider.GetService<ILogger<AcmeClient>>();
 
-                return new AcmeClient(directoryUri, httpClient, acmeLogger);
+                return new AcmeClient(directoryUri.IfNotNullOrWhiteSpace(otherwise: LetsEncrypt.DirectoryUri), httpClient, acmeLogger);
             });
         }
 
