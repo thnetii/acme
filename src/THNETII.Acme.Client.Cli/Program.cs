@@ -120,7 +120,7 @@ Command names can be shortened.
                 var httpClient = serviceProvider.GetService<HttpClient>();
                 var acmeLogger = serviceProvider.GetService<ILogger<AcmeClient>>();
 
-                return new AcmeClient(directoryUri.IfNotNullOrWhiteSpace(otherwise: LetsEncrypt.DirectoryUri), httpClient, acmeLogger);
+                return new AcmeClient(directoryUri.NotNullOrWhiteSpace(otherwise: LetsEncrypt.DirectoryUri), httpClient, acmeLogger);
             });
         }
 

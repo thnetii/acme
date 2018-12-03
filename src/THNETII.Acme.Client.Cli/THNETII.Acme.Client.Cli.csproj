@@ -15,12 +15,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common.Cli.Extensions\THNETII.Common.Cli.Extensions.csproj" />
     <ProjectReference Include="..\THNETII.Acme.Client\THNETII.Acme.Client.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common.Cli\THNETII.Common.Cli.csproj" />
   </ItemGroup>
 
