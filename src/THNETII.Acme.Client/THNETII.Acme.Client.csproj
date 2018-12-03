@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common\THNETII.Common.csproj" />
+    <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common.Serialization\THNETII.Common.Serialization.csproj" />
   </ItemGroup>
   
 </Project>
