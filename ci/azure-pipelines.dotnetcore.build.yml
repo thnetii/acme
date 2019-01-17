@@ -8,7 +8,7 @@ jobs:
     jobDisplayName:             Debug Configuration
     condition:                  ne(variables['SkipConfigurationDebug'], 'true')
     addStaticConfigurationArguments:  --configuration Debug
-    addVarConfigurationArguments:      ${{ variables.AddCommonArguments }} ${{ variables.AddDebugArguments }}
+    addVarConfigurationArguments:      $(AddCommonArguments) $(AddDebugArguments)
     arftifactNameSuffix:        debug
 - template: azure-pipelines.dotnetcore.buildJob.yml
   parameters:
@@ -16,5 +16,5 @@ jobs:
     jobDisplayName:             Release Configuration
     condition:                  ne(variables['SkipConfigurationRelease'], 'true')
     addStaticConfigurationArguments:  --configuration Release
-    addVarConfigurationArguments:     ${{ variables.AddCommonArguments }} ${{ variables.AddReleaseArguments }}
+    addVarConfigurationArguments:     $(AddCommonArguments) $(AddReleaseArguments)
     arftifactNameSuffix:        release

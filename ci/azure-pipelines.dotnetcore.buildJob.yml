@@ -21,20 +21,20 @@ jobs:
       command:    custom
       custom:     restore
       projects:   ${{ parameters.allProjects }}
-      arguments:  ${{ parameters.commonArguments }} ${{ variables.AddRestoreArguments }}
+      arguments:  ${{ parameters.commonArguments }} $(AddRestoreArguments)
   - task: DotNetCoreCLI@2
     displayName:  dotnet build ${{ parameters.addStaticConfigurationArguments }}
     inputs:
       command:    build
       projects:   ${{ parameters.allProjects }}
-      arguments:  ${{ parameters.commonArguments }} ${{ parameters.addStaticConfigurationArguments }} ${{ parameters.addVarConfigurationArguments }} ${{ variables.AddBuildArguments }}
+      arguments:  ${{ parameters.commonArguments }} ${{ parameters.addStaticConfigurationArguments }} ${{ parameters.addVarConfigurationArguments }} $(AddBuildArguments)
   - task: DotNetCoreCLI@2
     displayName:  dotnet test ${{ parameters.addStaticConfigurationArguments }}
     condition:    ne(variables['SkipStepTestRun'], 'true')
     inputs:
       command:    test
       projects:   ${{ parameters.testProjects }}
-      arguments:  ${{ parameters.commonArguments }} ${{ parameters.addStaticConfigurationArguments }} ${{ parameters.addVarConfigurationArguments }} ${{ variables.AddTestArguments }}
+      arguments:  ${{ parameters.commonArguments }} ${{ parameters.addStaticConfigurationArguments }} ${{ parameters.addVarConfigurationArguments }} $(AddTestArguments)
       publishTestResults: true
   - task: DotNetCoreCLI@2
     displayName:  dotnet pack ${{ parameters.addStaticConfigurationArguments }}
@@ -42,13 +42,13 @@ jobs:
       command:    custom
       custom:     pack
       projects:   ${{ parameters.sourceProjects }}
-      arguments:  --output $(Build.ArtifactStagingDirectory)/${{ parameters.arftifactNameSuffix }} ${{ parameters.commonArguments }} ${{ parameters.addStaticConfigurationArguments }} ${{ parameters.addVarConfigurationArguments }} ${{ variables.AddPackArguments }}
+      arguments:  --output $(Build.ArtifactStagingDirectory)/${{ parameters.arftifactNameSuffix }} ${{ parameters.commonArguments }} ${{ parameters.addStaticConfigurationArguments }} ${{ parameters.addVarConfigurationArguments }} $(AddPackArguments)
   - task: DotNetCoreCLI@2
     displayName:  dotnet publish ${{ parameters.addStaticConfigurationArguments }}
     inputs:
       command:            publish
       projects:           ${{ parameters.sourceProjects }}
-      arguments:          --output $(Build.ArtifactStagingDirectory)/${{ parameters.arftifactNameSuffix }} ${{ parameters.commonArguments }} ${{ parameters.addStaticConfigurationArguments }} ${{ parameters.addVarConfigurationArguments }} ${{ variables.AddPublishArguments }}
+      arguments:          --output $(Build.ArtifactStagingDirectory)/${{ parameters.arftifactNameSuffix }} ${{ parameters.commonArguments }} ${{ parameters.addStaticConfigurationArguments }} ${{ parameters.addVarConfigurationArguments }} $(AddPublishArguments)
       publishWebProjects: ${{ parameters.publishWebProjects }}
       zipAfterPublish:    false
   - task: PublishBuildArtifacts@1
