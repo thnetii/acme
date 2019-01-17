@@ -16,5 +16,5 @@ jobs:
     inputs:
       command:    test
       projects:   ${{ parameters.testProjects }}
-      arguments:  ${{ parameters.commonArguments }} ${{ parameters.addStaticConfigurationArguments }} ${{ parameters.addVarConfigurationArguments }} ${{ variables.AddTestArguments }}
+      arguments:  ${{ parameters.commonArguments }} ${{ parameters.addStaticConfigurationArguments }} ${{ parameters.addVarConfigurationArguments }} $(AddTestArguments)
       publishTestResults: true
