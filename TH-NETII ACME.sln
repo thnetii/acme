@@ -1,15 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28606.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{24DFF068-7CAE-41CF-B2B9-1C42E2AEA400}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		.gitmodules = .gitmodules
+		AllRules.ruleset = AllRules.ruleset
 		Directory.Build.props = Directory.Build.props
+		Directory.Meta.props = Directory.Meta.props
+		Directory.Version.props = Directory.Version.props
 		LICENSE = LICENSE
+		nuget.config = nuget.config
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B8B75351-572E-46FF-B675-F25E12193D59}"
@@ -36,28 +41,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{4815
 		.vscode\tasks.json = .vscode\tasks.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet-common", "dotnet-common", "{75F073C8-2EA9-4940-8F89-D99F5495FB71}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rfc", "rfc", "{7C0607CB-BD78-4E56-BB53-D40285D41D89}"
-	ProjectSection(SolutionItems) = preProject
-		dotnet-common\doc\rfc\rfc7165.html = dotnet-common\doc\rfc\rfc7165.html
-		dotnet-common\doc\rfc\rfc7515.html = dotnet-common\doc\rfc\rfc7515.html
-		dotnet-common\doc\rfc\rfc7516.html = dotnet-common\doc\rfc\rfc7516.html
-		dotnet-common\doc\rfc\rfc7517.html = dotnet-common\doc\rfc\rfc7517.html
-		dotnet-common\doc\rfc\rfc7518.html = dotnet-common\doc\rfc\rfc7518.html
-		dotnet-common\doc\rfc\rfc7519.html = dotnet-common\doc\rfc\rfc7519.html
-		dotnet-common\doc\rfc\rfc7520.html = dotnet-common\doc\rfc\rfc7520.html
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet-common", "dotnet-common", "{4E2D5A4C-2D5A-4A87-A997-2F0DF6B71ABD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{38B954A5-1661-41B3-A332-EE572E61A702}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THNETII.Common", "dotnet-common\src\THNETII.Common\THNETII.Common.csproj", "{DE8691D6-069C-4025-9F56-8FAABA79B836}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common", "dotnet-common\src\THNETII.Common\THNETII.Common.csproj", "{DE8691D6-069C-4025-9F56-8FAABA79B836}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THNETII.Common.Cli", "dotnet-common\src\THNETII.Common.Cli\THNETII.Common.Cli.csproj", "{65592736-76A6-4B2D-A946-A7CDD84348E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.Cli", "dotnet-common\src\THNETII.Common.Cli\THNETII.Common.Cli.csproj", "{65592736-76A6-4B2D-A946-A7CDD84348E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THNETII.Common.Serialization", "dotnet-common\src\THNETII.Common.Serialization\THNETII.Common.Serialization.csproj", "{2ACFCC6E-6590-49FA-A393-2426A2E8D5C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.Serialization", "dotnet-common\src\THNETII.Common.Serialization\THNETII.Common.Serialization.csproj", "{2ACFCC6E-6590-49FA-A393-2426A2E8D5C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,8 +92,6 @@ Global
 		{E1065F73-1E2C-497A-BBC9-C8CBBB4A4DA1} = {40030D25-BA09-4EEC-9EE2-81EE22E8A4AD}
 		{301807F9-2098-45F8-813F-7B53F8ADCB38} = {B8B75351-572E-46FF-B675-F25E12193D59}
 		{48153BA2-F227-49FC-BEB6-8ABC24D47217} = {24DFF068-7CAE-41CF-B2B9-1C42E2AEA400}
-		{75F073C8-2EA9-4940-8F89-D99F5495FB71} = {5A3AAF6E-0FA3-4317-8AAE-0D38BA05F97E}
-		{7C0607CB-BD78-4E56-BB53-D40285D41D89} = {75F073C8-2EA9-4940-8F89-D99F5495FB71}
 		{38B954A5-1661-41B3-A332-EE572E61A702} = {4E2D5A4C-2D5A-4A87-A997-2F0DF6B71ABD}
 		{DE8691D6-069C-4025-9F56-8FAABA79B836} = {38B954A5-1661-41B3-A332-EE572E61A702}
 		{65592736-76A6-4B2D-A946-A7CDD84348E2} = {38B954A5-1661-41B3-A332-EE572E61A702}

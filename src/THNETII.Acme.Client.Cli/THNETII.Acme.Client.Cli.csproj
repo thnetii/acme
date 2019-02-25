@@ -9,14 +9,18 @@
   <PropertyGroup>
     <AssemblyName>thnetii-acme-client-cli</AssemblyName>
     <OutputType>Exe</OutputType>
+    <LangVersion>7.1</LangVersion>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
+    <PackageReference Include="System.CommandLine.Experimental" Version="0.1.0-*" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" />
+    <PackageReference Condition="'$(Configuration)'=='Debug'" Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>
