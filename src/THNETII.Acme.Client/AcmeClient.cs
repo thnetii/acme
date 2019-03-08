@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -88,7 +89,7 @@ namespace THNETII.Acme.Client
             {
                 if (!msg.Content.IsJson())
                     throw new HttpRequestException($"Invalid Content-Type in HTTP Response message. Expected JSON content, but got: {msg.Content.Headers.ContentType}");
-                using (var textReader = await msg.Content.ReadAsStreamReaderAsync().ConfigureAwait(false))
+                using (var textReader = await msg.Content.ReadAsStreamReaderAsync(Encoding.UTF8).ConfigureAwait(false))
                 using (var jsonReader = new JsonTextReader(textReader))
                 {
                     cancelToken.ThrowIfCancellationRequested();
