@@ -51,6 +51,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.Cli", "dotne
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.Common.Serialization", "dotnet-common\src\THNETII.Common.Serialization\THNETII.Common.Serialization.csproj", "{2ACFCC6E-6590-49FA-A393-2426A2E8D5C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THNETII.Diagnostics.DiagnosticSourceExtensions", "dotnet-common\src\THNETII.Diagnostics.DiagnosticSourceExtensions\THNETII.Diagnostics.DiagnosticSourceExtensions.csproj", "{ACD48456-13AD-4597-A0DD-21CD01D142B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THNETII.Networking.Http", "dotnet-common\src\THNETII.Networking.Http\THNETII.Networking.Http.csproj", "{36968835-8491-40EB-A245-3434CEA87999}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +85,14 @@ Global
 		{2ACFCC6E-6590-49FA-A393-2426A2E8D5C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ACFCC6E-6590-49FA-A393-2426A2E8D5C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ACFCC6E-6590-49FA-A393-2426A2E8D5C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACD48456-13AD-4597-A0DD-21CD01D142B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACD48456-13AD-4597-A0DD-21CD01D142B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACD48456-13AD-4597-A0DD-21CD01D142B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACD48456-13AD-4597-A0DD-21CD01D142B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36968835-8491-40EB-A245-3434CEA87999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36968835-8491-40EB-A245-3434CEA87999}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36968835-8491-40EB-A245-3434CEA87999}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36968835-8491-40EB-A245-3434CEA87999}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +108,8 @@ Global
 		{DE8691D6-069C-4025-9F56-8FAABA79B836} = {38B954A5-1661-41B3-A332-EE572E61A702}
 		{65592736-76A6-4B2D-A946-A7CDD84348E2} = {38B954A5-1661-41B3-A332-EE572E61A702}
 		{2ACFCC6E-6590-49FA-A393-2426A2E8D5C3} = {38B954A5-1661-41B3-A332-EE572E61A702}
+		{ACD48456-13AD-4597-A0DD-21CD01D142B2} = {38B954A5-1661-41B3-A332-EE572E61A702}
+		{36968835-8491-40EB-A245-3434CEA87999} = {38B954A5-1661-41B3-A332-EE572E61A702}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A33BD0A9-94AE-47CD-9B4D-DB86A4EAEF68}

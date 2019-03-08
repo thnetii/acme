@@ -54,10 +54,13 @@ namespace THNETII.Acme.Client.Cli
             services.AddSingleton(serviceProvider =>
             {
                 var directoryUri = serviceProvider.GetService<IConfiguration>()?[AcmeDirectoryConfigKey];
-                var httpClient = serviceProvider.GetService<HttpClient>();
+                var httpHandler = serviceProvider.GetService<HttpMessageHandler>();
                 var acmeLogger = serviceProvider.GetService<ILogger<AcmeClient>>();
 
-                return new AcmeClient(directoryUri.NotNullOrWhiteSpace(otherwise: LetsEncrypt.DirectoryUri), httpClient, acmeLogger);
+                return AcmeClient.CreateAsync(
+                    directoryUri.NotNullOrWhiteSpace(otherwise: LetsEncrypt.DirectoryUri),
+                    httpHandler, disposeHandler: false
+                    ).ConfigureAwait(false).GetAwaiter().GetResult();
             });
         }
 

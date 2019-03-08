@@ -1,132 +1,157 @@
-﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Linq;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using THNETII.Common;
+using Newtonsoft.Json;
+using THNETII.Networking.Http;
 
 namespace THNETII.Acme.Client
 {
     public class AcmeClient : IDisposable
     {
-        private static readonly string httpUserAgentProduct;
-        private static readonly string httpUserAgentVersion;
-
-        static AcmeClient()
-        {
-            var ai = typeof(AcmeClient).GetTypeInfo().Assembly;
-            var ver = ai.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-            AssemblyName an = ai.GetName();
-            httpUserAgentProduct = an.Name;
-            httpUserAgentVersion = ver ?? an.Version.ToString();
-        }
-
-        private static HttpRequestMessage SetUserAgent(HttpRequestMessage httpReqMsg)
-        {
-            //httpReqMsg.Headers.UserAgent.Clear();
-            httpReqMsg.Headers.UserAgent.Add(new ProductInfoHeaderValue(httpUserAgentProduct, httpUserAgentVersion));
-            return httpReqMsg;
-        }
-
+        private static readonly MediaTypeWithQualityHeaderValue jsonAcceptHeader = new MediaTypeWithQualityHeaderValue(HttpWellKnownMediaType.ApplicationJson);
         private static JsonSerializer jsonSerializer = JsonSerializer.CreateDefault();
 
-        private readonly SemaphoreSlim nonce_guard = new SemaphoreSlim(1);
         private readonly HttpClient httpClient;
-        private string replayNonce;
-        private readonly ILogger<AcmeClient> logger;
         private AcmeDirectory directory;
-        private readonly bool disposeHttpClient = false;
+        private readonly AcmeClientNonceHttpHandler nonceHandler;
 
-        public Task<AcmeDirectory> InitDirectoryTask { get; }
+        public string ReplayNonce => nonceHandler.ReplayNonce;
+        public AcmeDirectory Directory => directory;
 
-        public AcmeDirectory Directory => InitDirectoryTask?.GetAwaiter().GetResult();
-
-        private async Task<TResponse> ReadHttpResponse<TResponse>(Task<HttpResponseMessage> httpRespMsgTask, CancellationToken cancelToken = default(CancellationToken))
+        public AcmeClient(HttpClient httpClient, AcmeClientNonceHttpHandler nonceHandler, AcmeDirectory directory)
+            : base()
         {
-            using (var httpResponseMessage = await httpRespMsgTask)
-            {
-                logger?.LogDebug($"Received HTTP Response {{{nameof(httpResponseMessage)}}}", httpResponseMessage);
-                var httpRespStreamTask = httpResponseMessage.Content.ReadAsStreamAsync();
-                replayNonce = httpResponseMessage.Headers.TryGetValues("Replay-Nonce", out var replayNonces) ? replayNonces.FirstOrDefault() : null;
-                logger?.LogTrace("Releasing Nonce guard");
-                nonce_guard.Release();
+            this.httpClient = httpClient;
+            this.nonceHandler = nonceHandler;
+            this.directory = directory;
+        }
 
-                cancelToken.ThrowIfCancellationRequested();
-                using (var jsonRespRead = new JsonTextReader(new StreamReader(await httpRespStreamTask)))
+        [SuppressMessage("Usage", "CA2234: Pass system uri objects instead of strings")]
+        public static Task<AcmeClient> CreateAsync(string directoryUriString,
+            CancellationToken cancelToken = default) =>
+            CreateAsync(directoryUriString, httpHandler: default, cancelToken);
+
+        public static Task<AcmeClient> CreateAsync(Uri directoryUri,
+            CancellationToken cancelToken = default) =>
+            CreateAsync(directoryUri, httpHandler: default, cancelToken);
+
+        [SuppressMessage("Usage", "CA2234: Pass system uri objects instead of strings")]
+        public static Task<AcmeClient> CreateAsync(string directoryUriString,
+            HttpMessageHandler httpHandler, CancellationToken cancelToken = default) =>
+            CreateAsync(directoryUriString, httpHandler, disposeHandler: true, cancelToken);
+
+        public static Task<AcmeClient> CreateAsync(Uri directoryUri,
+            HttpMessageHandler httpHandler, CancellationToken cancelToken = default) =>
+            CreateAsync(directoryUri, httpHandler, disposeHandler: true, cancelToken);
+
+        [SuppressMessage("Usage", "CA2234: Pass system uri objects instead of strings")]
+        public static Task<AcmeClient> CreateAsync(string directoryUriString,
+            HttpMessageHandler httpHandler, bool disposeHandler,
+            CancellationToken cancelToken = default) =>
+            CreateAsync(directoryUriString, (s => new HttpRequestMessage(HttpMethod.Get, s)),
+                httpHandler, disposeHandler, cancelToken);
+
+        public static Task<AcmeClient> CreateAsync(Uri directoryUri,
+            HttpMessageHandler httpHandler, bool disposeHandler,
+            CancellationToken cancelToken = default) =>
+            CreateAsync(directoryUri, (u => new HttpRequestMessage(HttpMethod.Get, u)),
+                httpHandler, disposeHandler, cancelToken);
+
+        private static async Task<AcmeClient> CreateAsync<TUri>(TUri directoryUri,
+            Func<TUri, HttpRequestMessage> httpGetFactory,
+            HttpMessageHandler httpHandler, bool disposeHandler,
+            CancellationToken cancelToken = default)
+        {
+            if (httpHandler is null)
+            {
+                httpHandler = new HttpClientHandler();
+                disposeHandler = true;
+            }
+
+            var nonceHandler = new AcmeClientNonceHttpHandler(httpHandler);
+            var userAgentHandler = new AcmeClientHttpUserAgentHandler(nonceHandler);
+            var httpClient = new HttpClient(userAgentHandler, disposeHandler);
+
+            var directory = await GetAcmeDirectoryAsync(directoryUri, httpClient,
+                httpGetFactory, cancelToken).ConfigureAwait(false);
+
+            return new AcmeClient(httpClient, nonceHandler, directory);
+        }
+
+        private static async Task<TResponse> ReadHttpResponseAsync<TResponse>(
+            Task<HttpResponseMessage> responseTask, CancellationToken cancelToken = default)
+        {
+            using (var msg = await responseTask.ConfigureAwait(false))
+            {
+                if (!msg.Content.IsJson())
+                    throw new HttpRequestException($"Invalid Content-Type in HTTP Response message. Expected JSON content, but got: {msg.Content.Headers.ContentType}");
+                using (var textReader = await msg.Content.ReadAsStreamReaderAsync().ConfigureAwait(false))
+                using (var jsonReader = new JsonTextReader(textReader))
                 {
                     cancelToken.ThrowIfCancellationRequested();
-                    return jsonSerializer.Deserialize<TResponse>(jsonRespRead);
+                    return jsonSerializer.Deserialize<TResponse>(jsonReader);
                 }
             }
         }
 
-        public AcmeClient(string directoryUriString, HttpClient httpClient = null, ILogger<AcmeClient> logger = null)
-            : this(httpClient, logger)
+        private static async Task<AcmeDirectory> GetAcmeDirectoryAsync<TUri>(
+            TUri directoryUri, HttpClient httpClient,
+            Func<TUri, HttpRequestMessage> httpGetFactory,
+            CancellationToken cancelToken = default)
         {
-            InitDirectoryTask = LoadDirectoryAsync(directoryUriString.ThrowIfNullOrWhiteSpace(nameof(directoryUriString)));
-        }
-
-        public AcmeClient(Uri directoryUri, HttpClient httpClient = null, ILogger<AcmeClient> logger = null)
-            : this(httpClient, logger)
-        {
-            InitDirectoryTask = LoadDirectoryAsync(directoryUri.ThrowIfNull(nameof(directoryUri)));
-        }
-
-        private Task<AcmeDirectory> LoadDirectoryAsync(string directoryUri, CancellationToken cancelToken = default(CancellationToken))
-        {
-            HttpRequestMessage HttpRequestFromUriString() => new HttpRequestMessage(HttpMethod.Get, directoryUri);
-            return LoadDirectoryAsync(HttpRequestFromUriString, cancelToken);
-        }
-
-        private Task<AcmeDirectory> LoadDirectoryAsync(Uri directoryUri, CancellationToken cancelToken = default(CancellationToken))
-        {
-            HttpRequestMessage HttpRequestFromUri() => new HttpRequestMessage(HttpMethod.Get, directoryUri);
-            return LoadDirectoryAsync(HttpRequestFromUri, cancelToken);
-        }
-
-        private async Task<AcmeDirectory> LoadDirectoryAsync(Func<HttpRequestMessage> requestMessageFactory, CancellationToken cancelToken = default(CancellationToken))
-        {
-            using (var httpRequestMessage = requestMessageFactory())
+            using (var requestMsg = httpGetFactory(directoryUri))
             {
-                httpRequestMessage.Headers.Accept.ParseAdd("application/json");
-                logger?.LogInformation($"Requesting ACME directory from {{{nameof(httpRequestMessage.RequestUri)}}}", httpRequestMessage.RequestUri);
-                directory = await LoadDirectoryAsyncWithHttpMessage(httpRequestMessage, cancelToken);
-                return directory;
+                requestMsg.Headers.Accept.Add(jsonAcceptHeader);
+
+                return await ReadHttpResponseAsync<AcmeDirectory>(
+                    httpClient.SendAsync(requestMsg, cancelToken)
+                    ).ConfigureAwait(false);
             }
         }
 
-        private Task<AcmeDirectory> LoadDirectoryAsyncWithHttpMessage(HttpRequestMessage httpRequestMessage, CancellationToken cancelToken = default(CancellationToken))
+        private async Task<AcmeDirectory> GetAcmeDirectoryAsync<TUri>(
+            TUri directoryUri, Func<TUri, HttpRequestMessage> httpGetFactory,
+            CancellationToken cancelToken = default)
         {
-            httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            SetUserAgent(httpRequestMessage);
-
-            nonce_guard.Wait();
-            logger?.LogTrace($"Nonce guard locked");
-            logger?.LogDebug($"Sending HTTP Request {{{nameof(httpRequestMessage)}}}", httpRequestMessage);
-            return ReadHttpResponse<AcmeDirectory>(httpClient.SendAsync(httpRequestMessage, cancelToken));
+            var directory = await GetAcmeDirectoryAsync(directoryUri,
+                httpClient, httpGetFactory, cancelToken).ConfigureAwait(false);
+            this.directory = directory;
+            return directory;
         }
 
-        private AcmeClient(HttpClient httpClient = null, ILogger<AcmeClient> logger = null)
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
         {
-            if (httpClient == null)
+            if (!disposedValue)
             {
-                this.httpClient = new HttpClient();
-                disposeHttpClient = true;
-            }
-            else
-                this.httpClient = httpClient;
-            this.logger = logger;
-        }
+                if (disposing)
+                {
+                }
 
-        void IDisposable.Dispose()
-        {
-            if (disposeHttpClient)
                 httpClient.Dispose();
+
+                disposedValue = true;
+            }
         }
+
+        ~AcmeClient()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

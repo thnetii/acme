@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using THNETII.Common;
 
@@ -9,11 +10,16 @@ namespace THNETII.Acme.Client
     [DataContract]
     public class AcmeDirectory
     {
-        private readonly DuplexConversionTuple<string, Uri> keyChange;
-        private readonly DuplexConversionTuple<string, Uri> newAuthz;
-        private readonly DuplexConversionTuple<string, Uri> newCert;
-        private readonly DuplexConversionTuple<string, Uri> newReg;
-        private readonly DuplexConversionTuple<string, Uri> revokeCert;
+        private readonly DuplexConversionTuple<string, Uri> keyChange =
+            new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
+        private readonly DuplexConversionTuple<string, Uri> newAuthz =
+            new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
+        private readonly DuplexConversionTuple<string, Uri> newCert =
+            new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
+        private readonly DuplexConversionTuple<string, Uri> newReg =
+            new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
+        private readonly DuplexConversionTuple<string, Uri> revokeCert =
+            new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
 
         [DataMember(Name = "key-change")]
         public string KeyChangeUriString
@@ -89,18 +95,10 @@ namespace THNETII.Acme.Client
         public AcmeDirectoryMetadata Metadata { get; set; }
 
         [IgnoreDataMember]
-        public string TermOrServiceUriString => Metadata?.TermOrServiceUriString;
+        [SuppressMessage("Design", "CA1056: Uri properties should not be strings", Justification = nameof(TermsOfServiceUri))]
+        public string TermsOfServiceUriString => Metadata?.TermOrServiceUriString;
 
         [IgnoreDataMember]
         public Uri TermsOfServiceUri => Metadata?.TermsOfServiceUri;
-
-        public AcmeDirectory()
-        {
-            keyChange = new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
-            newAuthz = new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
-            newCert = new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
-            newReg = new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
-            revokeCert = new DuplexConversionTuple<string, Uri>(StringToUriSafe, UriToStringSafe);
-        }
     }
 }
