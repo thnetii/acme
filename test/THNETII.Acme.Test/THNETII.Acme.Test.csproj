@@ -2,10 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
-    <DebugType>portable</DebugType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     
     <RootNamespace>THNETII.Acme</RootNamespace>
 
