@@ -11,14 +11,13 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="4.5.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common\THNETII.Common.csproj" />
-    <ProjectReference Include="..\..\dotnet-common\src\THNETII.Common.Serialization\THNETII.Common.Serialization.csproj" />
     <ProjectReference Include="..\..\dotnet-common\src\THNETII.Diagnostics.DiagnosticSourceExtensions\THNETII.Diagnostics.DiagnosticSourceExtensions.csproj" />
     <ProjectReference Include="..\..\dotnet-common\src\THNETII.Networking.Http\THNETII.Networking.Http.csproj" />
+    <ProjectReference Include="..\..\dotnet-common\src\THNETII.TypeConverter\THNETII.TypeConverter.csproj" />
   </ItemGroup>
 
 </Project>
