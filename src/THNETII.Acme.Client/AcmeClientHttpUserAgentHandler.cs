@@ -3,10 +3,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
-
-#if NETSTANDARD1_3
 using System.Reflection;
-#endif // NETSTANDARD1_3
 
 namespace THNETII.Acme.Client
 {
