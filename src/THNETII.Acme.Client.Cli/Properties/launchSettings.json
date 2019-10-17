@@ -2,7 +2,7 @@
   "profiles": {
     "THNETII.Acme.Client.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "--verbose cancel directory"
+      "commandLineArgs": "--verbose"
     }
   }
 }
