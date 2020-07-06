@@ -2,10 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>THNETII.Acme</RootNamespace>
-
     <Description>TH-NETII ACME Unit Tests</Description>
   </PropertyGroup>
 
