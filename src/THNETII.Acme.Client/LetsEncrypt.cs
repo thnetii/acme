@@ -1,4 +1,4 @@
-﻿namespace THNETII.Acme.Client
+namespace THNETII.Acme.Client
 {
     /// <summary>
     /// Provides common static values and constants for the Let&apos;s Encrypt ACME Services.
